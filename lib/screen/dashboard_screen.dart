@@ -1,7 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tgcd/provider/auth_provider.dart';
+import 'package:tgcd/provider/notification.dart';
+import 'package:tgcd/provider/post_provider.dart';
+import 'package:tgcd/screen/add_post_screen.dart';
 import 'package:tgcd/screen/comp/birthday_comp.dart';
 import 'package:tgcd/screen/profile_screen.dart';
 import 'package:tgcd/util/widget.dart';
@@ -24,6 +28,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     Future.microtask(() => context.read<AllUserProvider>().getBirthDayUser());
     Future.microtask(
         () => context.read<UserProvider>().getUserProfile(context));
+    Future.microtask(() => context.read<PostProvider>().deleteAuto());
   }
 
   @override
@@ -43,7 +48,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                 builder: (context) => ProfileScreen()));
                       },
                       child: Padding(
-                        padding: const EdgeInsets.all(2.0),
+                        padding: EdgeInsets.all(8.0),
                         child: AvatarImageHolder(
                           url: user.photoUrl,
                         ),
@@ -68,26 +73,35 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
         shrinkWrap: true,
         physics: ClampingScrollPhysics(),
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 19 , vertical: 20),
-            child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black),
-                  borderRadius: BorderRadius.circular(30)
-                ),
-                width: MediaQuery.of(context).size.width,
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("What's in your mind...", style: TextStyle(
-                        fontWeight: FontWeight.w900
-                      ),),
-                      Icon(Icons.photo ,size: 20,)
-                    ],
-                  ),
-                )),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => AddPostScreen()));
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 19, vertical: 20),
+              child: Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black),
+                      borderRadius: BorderRadius.circular(30)),
+                  width: MediaQuery.of(context).size.width,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "What's in your mind...",
+                          style: TextStyle(fontWeight: FontWeight.w900),
+                        ),
+                        Icon(
+                          Icons.photo,
+                          size: 20,
+                        )
+                      ],
+                    ),
+                  )),
+            ),
           ),
           BirthDayComp(),
           ShowPostComp(),

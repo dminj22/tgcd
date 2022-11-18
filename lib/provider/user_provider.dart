@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:tgcd/screen/dashboard_screen.dart';
 import 'package:tgcd/util/widget.dart';
@@ -12,21 +13,18 @@ class UserProvider extends ChangeNotifier {
   var displayName;
   var phoneNumber;
   var photoUrl;
+  var userToken;
   Timestamp? dob;
 
   updateUserProfile(context, displayName, photoURL) async {
     final user = FirebaseAuth.instance.currentUser;
     await user!.updateDisplayName(displayName).then((value) async {
       await user.updatePhotoURL(photoURL).then((value) async {
-        bool step1 = await addUserInformationToDatabase(context);
-        if (step1) {
-          bool step2 = await getUserProfile(context);
-          if (step2) {
-            showSnackBar(context, "Welcome $displayName");
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => DashBoardScreen()));
-          }
-          notifyListeners();
+        bool step2 = await getUserProfile(context);
+        if (step2) {
+          showSnackBar(context, "Welcome $displayName");
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => DashBoardScreen()));
         }
         notifyListeners();
       }).catchError((e) {
@@ -59,12 +57,15 @@ class UserProvider extends ChangeNotifier {
   }
 
   addUserInformationToDatabase(context) async {
+    String? token = await FirebaseMessaging.instance.getToken();
+    userToken = token;
     CollectionReference users = FirebaseFirestore.instance.collection('users');
     bool done = await users.doc(uid).set({
       "uid": uid,
       "name": displayName,
       "number": phoneNumber,
-      "image": photoUrl
+      "image": photoUrl,
+      "token": token
     }, SetOptions(merge: true)).then((value) {
       return true;
     }).catchError((e) {

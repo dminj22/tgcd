@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tgcd/provider/auth_provider.dart';
+import 'package:tgcd/provider/notification.dart';
 import 'package:tgcd/screen/avatar_screen.dart';
 import 'package:tgcd/screen/dashboard_screen.dart';
 import 'package:tgcd/screen/login_screen.dart';
@@ -17,7 +18,9 @@ class _LandingScreenState extends State<LandingScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    backgroundNotification();
     Future.microtask(() => context.read<AuthProvider>().userAuthStatus(context));
+    Future.microtask(() => context.read<NotificationProvider>().foregroundNotification());
   }
 
   @override

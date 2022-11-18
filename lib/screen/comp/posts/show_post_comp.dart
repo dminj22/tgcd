@@ -43,7 +43,7 @@ class _ShowPostCompState extends State<ShowPostComp> {
                 } else if (snapshot.hasError) {
                   return Icon(Icons.error_outline);
                 } else {
-                  return CircularProgressIndicator();
+                  return Center(child: CircularProgressIndicator());
                 }
               });
         },
@@ -69,10 +69,12 @@ class _PostItemState extends State<PostItem> {
     var name = widget.postData!.get("name");
     var image = widget.postData!.get("image");
     var created = widget.postData!.get("created");
-    var postText = widget.postData!.get("post_text");
-    var uid = widget.postData!.get("uid");
+    String postText = widget.postData!.get("post_text");
+    var postUserUid = widget.postData!.get("uid");
+    var postToken = widget.postData!.get("token");
     var docId = widget.postData!.id;
     var reportNo = widget.postData!.get("report");
+    var type = widget.postData!.get("type");
     List? likeList = widget.postData!.get("like");
     List? comment = widget.postData!.get("comment");
 
@@ -81,11 +83,10 @@ class _PostItemState extends State<PostItem> {
     String _selectedMenu = '';
     return Card(
       elevation: 3,
-      margin: EdgeInsets.symmetric(horizontal: 19 , vertical: 10),
+      margin: EdgeInsets.symmetric(horizontal: 19, vertical: 10),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-        side: BorderSide(color: Colors.black26)
-      ),
+          borderRadius: BorderRadius.circular(10),
+          side: BorderSide(color: Colors.black26)),
       borderOnForeground: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,12 +95,8 @@ class _PostItemState extends State<PostItem> {
             dense: true,
             style: ListTileStyle.list,
             enableFeedback: true,
-            onTap: (){
-
-            },
-            onLongPress: (){
-
-            },
+            onTap: () {},
+            onLongPress: () {},
             leading: Container(
               width: 48,
               height: 48,
@@ -110,7 +107,10 @@ class _PostItemState extends State<PostItem> {
             title: Text(
               name ?? "",
               maxLines: 1,
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14,),
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+              ),
             ),
             subtitle: Wrap(
               children: [
@@ -118,7 +118,10 @@ class _PostItemState extends State<PostItem> {
                   "${getTimeDifferenceFromNow(_d)}",
                   style: TextStyle(fontWeight: FontWeight.w500, fontSize: 10),
                 ),
-                Icon(Icons.timeline, size: 10,)
+                Icon(
+                  Icons.timeline,
+                  size: 10,
+                )
               ],
             ),
             contentPadding: EdgeInsets.all(10),
@@ -128,7 +131,7 @@ class _PostItemState extends State<PostItem> {
                   setState(() {
                     _selectedMenu = item.name;
                     if (item.name == "delete") {
-                      context.read<PostProvider>().deletePost(context, docId);
+                      context.read<PostProvider>().deletePost(context, docId , type , widget.postData!.get("image_path"));
                     } else if (item.name == "report") {
                       context
                           .read<PostProvider>()
@@ -137,29 +140,33 @@ class _PostItemState extends State<PostItem> {
                   });
                 },
                 itemBuilder: (BuildContext context) => <PopupMenuEntry<Menu>>[
-                      if (uid != context.read<UserProvider>().uid)
+                      if (postUserUid != context.read<UserProvider>().uid)
                         PopupMenuItem<Menu>(
                           value: Menu.report,
                           child: Text('Report'),
                         ),
-                      if (uid == context.read<UserProvider>().uid)
+                      if (postUserUid == context.read<UserProvider>().uid)
                         PopupMenuItem<Menu>(
                           value: Menu.delete,
                           child: Text('Delete'),
                         ),
                     ]),
           ),
+          if(type == "image")
+            Center(child: Image.network(widget.postData!.get("post_image"))),
+          if(postText.isNotEmpty)
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14),
+            padding: const EdgeInsets.symmetric(horizontal: 14 , vertical: 10),
             child: Text(
               "$postText",
-              style: TextStyle(fontWeight: FontWeight.w400 , fontSize: 13),
+              style: TextStyle(fontWeight: FontWeight.w400, fontSize: 12),
             ),
           ),
           ReactOnPostComp(
             docId: docId,
-            likeCount : likeList!.length,
+            likeCount: likeList!.length,
             comment: comment,
+            toFcmToken: postToken,
             liked: likeList.contains(context.read<UserProvider>().uid),
           ),
         ],

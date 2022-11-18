@@ -45,6 +45,9 @@ dependencies:
   provider: ^6.0.4
   lottie: ^2.0.0
   intl: ^0.17.0
+  http: ^0.13.5
+  image_picker: ^0.8.6
+  image_cropper: ^3.0.1
 
 
 dev_dependencies:
