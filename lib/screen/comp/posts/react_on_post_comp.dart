@@ -41,17 +41,19 @@ class _ReactOnPostCompState extends State<ReactOnPostComp> {
                 topRight: Radius.circular(20), topLeft: Radius.circular(20))),
         enableDrag: true,
         builder: (context) {
-          return Padding(
-            padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom),
-            child: Container(
-              height: MediaQuery.of(context).size.height * .5,
-              child: CommentPage(
-                comment: widget.comment,
-                docId: widget.docId,
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: Container(
+                height: MediaQuery.of(context).size.height * .5,
+                child: CommentPage(
+                  docId: widget.docId,
+                ),
               ),
-            ),
-          );
+            );
+          });
         });
   }
 
@@ -103,14 +105,12 @@ class _ReactOnPostCompState extends State<ReactOnPostComp> {
                     )),
                 TextButton.icon(
                   onPressed: () {
-                    showCommentBox();
-                    //
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (context) => CommentPage(
-                    //               comment: widget.comment,
-                    //             )));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CommentPage(
+                                  docId: widget.docId,
+                                )));
                   },
                   label: Text(
                     "comment",
@@ -122,22 +122,6 @@ class _ReactOnPostCompState extends State<ReactOnPostComp> {
                     size: 15,
                   ),
                 ),
-                // Visibility(
-                //     visible: commentController.text.length > 5,
-                //     child: IconButton(
-                //         onPressed: () {
-                //           var user =
-                //               Provider.of<UserProvider>(context, listen: false);
-                //           context.read<PostProvider>().commentOnPost(
-                //               widget.docId,
-                //               user.uid,
-                //               commentController.text,
-                //               user.displayName,
-                //               user.photoUrl);
-                //           commentController.clear();
-                //           setState(() {});
-                //         },
-                //         icon: Icon(Icons.send)))
               ],
             ),
           ),

@@ -19,6 +19,14 @@ class PostProvider extends ChangeNotifier {
       .orderBy('created', descending: true)
       .snapshots();
 
+  //
+  // final Stream<QuerySnapshot> allComment = FirebaseFirestore.instance
+  //     .collection('posts').doc();
+
+  allComments(docId) {
+    return FirebaseFirestore.instance.collection('posts').doc(docId).get();
+  }
+
   addPost(context, text) async {
     var user = Provider.of<UserProvider>(context, listen: false);
     return post.add({
@@ -130,12 +138,13 @@ class PostProvider extends ChangeNotifier {
         }
       ])
     }).then((value) {
-      Navigator.pop(context);
-      showSnackBar(context, "Comment on Post");
+      return true;
     }).catchError((e) {
       print(e);
     });
   }
+
+  showComment(docId) {}
 
   /// Add Image Post
   String finalImage = "";

@@ -103,7 +103,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   )),
             ),
           ),
-          BirthDayComp(),
+          // BirthDayComp(),
           ShowPostComp(),
         ],
       ),

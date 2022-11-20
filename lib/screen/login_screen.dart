@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
+import 'dart:math' as math;
 import 'package:provider/provider.dart';
 import 'package:tgcd/provider/auth_provider.dart';
 
@@ -26,9 +26,8 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 19),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Expanded(child: Lottie.asset("assets/lottie/login.json")),
                     TextFormField(
                       keyboardType: TextInputType.phone,
                       style: TextStyle(fontWeight: FontWeight.w600),

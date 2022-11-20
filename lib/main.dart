@@ -32,6 +32,8 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'TGCD',
         theme: appLightTheme,
+        darkTheme: appDarkTheme,
+        themeMode: ThemeMode.light,
         home: LandingScreen(),
       ),
     );
